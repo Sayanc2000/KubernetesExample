@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import Blog
 from app.oauth2 import get_current_active_user
-from app.schemas import userSchemas, blogSchemas
+from app.schemas import userSchemas, blogSchemas, basicSchemas
 from app.validators import blogValidators
 
 router = APIRouter(prefix="/blogs", tags=["blogs"])
@@ -35,9 +35,20 @@ def patch_blog(blog_id: str, data: blogSchemas.BlogPatch = Depends(),
                user: userSchemas.UserDisplay = Depends(get_current_active_user),
                db: Session = Depends(get_db), blog: Blog = Depends(blogValidators.blog_exists)):
     excluded_dict = data.dict(exclude_none=True)
-    print(excluded_dict)
+
     for attr, value in excluded_dict.items():
         setattr(blog, attr, value)
     db.commit()
     db.refresh(blog)
     return blog
+
+
+@router.delete("/{blog_id}", response_model=basicSchemas.DefaultResponse, description="Endpoint to delete a blog")
+def delete_blog(blog_id: str,
+                user: userSchemas.UserDisplay = Depends(get_current_active_user),
+                db: Session = Depends(get_db), blog: Blog = Depends(blogValidators.blog_exists)):
+    db.delete(blog)
+    db.commit()
+    return {
+        "message": "Blog deleted successfully"
+    }
