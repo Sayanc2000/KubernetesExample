@@ -78,5 +78,5 @@ async def get_current_user(
 
 async def get_current_active_user(
         current_user: userSchemas.UserDisplay = Depends(get_current_user),
-):
+) -> userSchemas.UserDisplay:
     return current_user
