@@ -12,7 +12,7 @@ from app.validators import userValidators
 router = APIRouter(prefix="/users", tags=["users"])
 
 
-@router.post("", response_model=userSchemas.UserDisplay, dependencies=[Depends(userValidators.user_exists)],
+@router.post("", response_model=userSchemas.UserDisplay, dependencies=[Depends(userValidators.user_already_exists)],
              description="Endpoint for creating user")
 def create_user(data: userSchemas.UserCreate, db: Session = Depends(get_db)):
     user = User(**data.dict(), id=str(uuid.uuid4()), password=get_password_hash(data.password))
