@@ -11,7 +11,8 @@ from app.schemas import authSchema
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
-@router.post("/login", response_model=authSchema.UserToken, description="Endpoint to login for access token")
+@router.post("/login", response_model=authSchema.UserToken,
+             description="Endpoint to login for access token")
 def login_user(data: authSchema.UserLogin, db: Session = Depends(get_db)):
     user = authenticate_user(db, data.email, data.password)
     if not user:
@@ -27,7 +28,8 @@ def login_user(data: authSchema.UserLogin, db: Session = Depends(get_db)):
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@router.post("/login/swagger", response_model=authSchema.UserToken, include_in_schema=False,
+@router.post("/login/swagger", response_model=authSchema.UserToken,
+             include_in_schema=False,
              description="Login for swagger ui functionality")
 async def loginForAccessToken(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = authenticate_user(db, form_data.username, form_data.password)
