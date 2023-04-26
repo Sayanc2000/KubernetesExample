@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app import models
 from app.database import engine
-from app.routers import users, auth
+from app.routers import users, auth, blogs
 from app.schemas.basicSchemas import DefaultResponse
 
 app = FastAPI()
@@ -19,6 +19,7 @@ app.add_middleware(
 
 app.include_router(users.router)
 app.include_router(auth.router)
+app.include_router(blogs.router)
 
 models.Base.metadata.create_all(bind=engine)
 
